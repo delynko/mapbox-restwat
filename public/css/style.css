@@ -1,0 +1,19 @@
+html, body {
+    height: 100%;
+    margin: 0
+}
+
+#map {
+    height: 100%;
+    position: relative
+}
+
+#button {
+    background-color: white;
+    z-index: 10;
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    top: 0;
+    left: 0
+}
