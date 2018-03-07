@@ -31,17 +31,19 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('user connected');
-    
+
     socket.on('get-coordinates', (data, callback) => {
-        
-        curl.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${data}?access_token=${process.env.MAPBOX_PUBLIC}`, {roundtrip: false}, (err, response, body) => {
+
+        curl.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${data}?access_token=${process.env.MAPBOX_PUBLIC}`, {
+            roundtrip: false
+        }, (err, response, body) => {
             var bodyParse = JSON.parse(body);
-            
+
             var line = polyline.decode(bodyParse.routes[0].geometry);
             callback(line);
         });
     });
-    
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
