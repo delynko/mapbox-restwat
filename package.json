@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@turf/helpers": "^6.0.1",
+    "@turf/turf": "^5.1.6",
     "curl": "^0.1.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.2",

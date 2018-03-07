@@ -4,11 +4,12 @@ html, body {
 }
 
 #map {
+    z-index: 1;
     height: 100%;
     position: relative
 }
 
-#button {
+#button-container {
     background-color: white;
     z-index: 10;
     position: absolute;
