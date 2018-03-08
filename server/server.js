@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const MapboxClient = require('mapbox');
 const path = require('path');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -9,20 +8,26 @@ const curl = require('curl');
 const polyline = require('polyline');
 const turf = require('@turf/turf');
 const helper = require('@turf/helpers');
+const MapboxClient = require('mapbox');
 
 const port = process.env.PORT || 3000;
 
 const datasetId = process.env.DATASET_ID;
 const client = new MapboxClient(process.env.MAPBOX_PRIVATE);
 
-var restWat;
-client.listFeatures(datasetId, {}, (err, collection) => {
-    restWat = collection;
-});
-
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+
+var restWat;
+client.listFeatures(datasetId, {}, (err, collection) => {
+    if (!err) {
+        restWat = collection;
+    } else {
+        restWat = undefined;
+        console.log('There was an error retrieving features');
+    }
+});
 
 app.use(express.static(path.join(__dirname, '../public')));
 
@@ -66,7 +71,7 @@ io.on('connection', (socket) => {
 
             var pointsInBuffer = (buff) => {
                 var pointsInBuffer = turf.pointsWithinPolygon(restWat, buff);
-                socket.emit('restWat-points', pointsInBuffer);      
+                socket.emit('restWat-points', pointsInBuffer);
             };
 
             pointsInBuffer(buffer);
