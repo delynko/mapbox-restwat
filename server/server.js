@@ -15,11 +15,11 @@ const port = process.env.PORT || 3000;
 const datasetId = process.env.DATASET_ID;
 const client = new MapboxClient(process.env.MAPBOX_PRIVATE);
 
-var app = express();
-var server = http.createServer(app);
-var io = socketIO(server);
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-var restWat;
+let restWat;
 client.listFeatures(datasetId, {}, (err, collection) => {
     if (!err) {
         restWat = collection;
@@ -36,9 +36,22 @@ app.set("view engine", "hbs");
 
 hbs.registerPartials(path.resolve(__dirname, '../views/partials'));
 
-
 app.get('/', (req, res) => {
-    res.render('index.hbs');
+    res.render('index.hbs', {
+        title: 'Choose Your Adventure'
+    })
+});
+
+app.get('/restwatenroute', (req, res) => {
+    res.render('restwatenroute.hbs', {
+        title: 'Mark your Route'
+    });
+});
+
+app.get('/adddata', (req, res) => {
+    res.render('adddata.hbs', {
+        title: 'Add Restroom Data'
+    });
 });
 
 io.on('connection', (socket) => {
@@ -49,12 +62,12 @@ io.on('connection', (socket) => {
         curl.get(`https://api.mapbox.com/directions/v5/mapbox/cycling/${urlCoordinates}?access_token=${process.env.MAPBOX_PUBLIC}`, {
             roundtrip: false
         }, (err, response, body) => {
-            var bodyParse = JSON.parse(body);
+            const bodyParse = JSON.parse(body);
 
-            var line = polyline.decode(bodyParse.routes[0].geometry);
+            const line = polyline.decode(bodyParse.routes[0].geometry);
 
-            var bufferCoordinates = (lineCoords) => {
-                var flipCoords = [];
+            const bufferCoordinates = (lineCoords) => {
+                const flipCoords = [];
 
                 for (i = 0; i < lineCoords.length; i++) {
 
@@ -63,14 +76,14 @@ io.on('connection', (socket) => {
                 return flipCoords
             };
 
-            var lineForBuffer = helper.lineString(bufferCoordinates(line));
+            const lineForBuffer = helper.lineString(bufferCoordinates(line));
 
-            var buffer = turf.buffer(lineForBuffer, 1000, {
+            const buffer = turf.buffer(lineForBuffer, 1000, {
                 units: 'feet'
             });
 
-            var pointsInBuffer = (buff) => {
-                var pointsInBuffer = turf.pointsWithinPolygon(restWat, buff);
+            const pointsInBuffer = (buff) => {
+                let pointsInBuffer = turf.pointsWithinPolygon(restWat, buff);
                 socket.emit('restWat-points', pointsInBuffer);
             };
 
