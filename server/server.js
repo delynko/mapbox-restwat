@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/restwatenroute', (req, res) => {
-    res.render('restwatenroute.hbs', {
+    res.render('route.hbs', {
         title: 'Mark your Route'
     });
 });
@@ -51,6 +51,12 @@ app.get('/restwatenroute', (req, res) => {
 app.get('/adddata', (req, res) => {
     res.render('adddata.hbs', {
         title: 'Add Restroom Data'
+    });
+});
+
+app.get('/features', (req, res) => {
+    client.listFeatures(datasetId, {}, function(err, collection) {
+        res.send(collection);
     });
 });
 
