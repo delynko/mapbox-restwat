@@ -10,7 +10,7 @@ const mapboxStreets = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/
 const map = L.map('map', {
     maxZoom: 18,
     layers: [mapboxStreets],
-}).setView([37.229508312347555, -112.96417236328126], 14);
+}).setView([38.760, -95.874], 5);
 map.zoomControl.setPosition('topright');
 
 const drawControl = new L.Control.Draw({
@@ -27,15 +27,34 @@ map.addControl(drawControl);
 
 displayPoints();
 
+map.on(L.Draw.Event.CREATED, function(e){
+    coordinates = [e.layer._latlng.lng, e.layer._latlng.lat];
+    
+    L.marker([coordinates[1], coordinates[0]]).addTo(map);
+});
+
+
 function displayPoints(){
     $.get('/features', function(data) {
-        console.log(data);
-        for (let i = 0; i < data.features.length; i++) {
-            
-            const point = L.marker([data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]]);
-            
-            map.addLayer(point);
-            
-        };
+        L.geoJSON(data, {
+            onEachFeature: function (feature, layer) {
+                if (layer.feature.properties.TOILET_TYP == 'F') {
+                    layer.setIcon(new L.icon({
+                        iconUrl: "images/rest-water.png",
+                        iconSize: [20, 20]
+                    }));
+                } else if (layer.feature.properties.TOILET_TYP == 'V' || layer.feature.properties.TOILET_TYP == 'P' || layer.feature.properties.TOILET_TYP == 'C') {
+                    layer.setIcon(new L.icon({
+                        iconUrl: "images/toilet.png",
+                        iconSize: [20, 20]
+                    }));
+                } else {
+                    layer.setIcon(new L.icon({
+                        iconUrl: "images/water.png",
+                        iconSize: [20, 20]
+                    }));
+                }
+            }
+        }).addTo(map);
     });
 }

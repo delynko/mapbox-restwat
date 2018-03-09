@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
     })
 });
 
-app.get('/restwatenroute', (req, res) => {
+app.get('/route', (req, res) => {
     res.render('route.hbs', {
         title: 'Mark your Route'
     });

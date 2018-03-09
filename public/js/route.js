@@ -10,7 +10,7 @@ const mapboxStreets = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/
 const map = L.map('map', {
     maxZoom: 18,
     layers: [mapboxStreets],
-}).setView([37.229508312347555, -112.96417236328126], 14);
+}).setView([38.760, -95.874], 5);
 map.zoomControl.setPosition('topright');
 
 let urlCoordinates = '';
