@@ -42,17 +42,17 @@ function displayPoints(){
                     layer.setIcon(new L.icon({
                         iconUrl: "images/rest-water.png",
                         iconSize: [20, 20]
-                    }));
+                    })).bindPopup('Toilet and Water');
                 } else if (layer.feature.properties.TOILET_TYP == 'V' || layer.feature.properties.TOILET_TYP == 'P' || layer.feature.properties.TOILET_TYP == 'C') {
                     layer.setIcon(new L.icon({
                         iconUrl: "images/toilet.png",
                         iconSize: [20, 20]
-                    }));
+                    })).bindPopup('Toilet Only');
                 } else {
                     layer.setIcon(new L.icon({
                         iconUrl: "images/water.png",
                         iconSize: [20, 20]
-                    }));
+                    })).bindPopup('Water Only');
                 }
             }
         }).addTo(map);

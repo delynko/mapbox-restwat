@@ -33,7 +33,7 @@ map.on('click', function (e) {
 
 });
 
-$('#submit').on('click', function () {
+document.getElementById('submit').addEventListener('click', function () {
     map.removeEventListener('click');
     socket.emit('get-url-coordinates', urlCoordinates, function (callback) {
         const route = L.polyline(callback, {
@@ -43,6 +43,7 @@ $('#submit').on('click', function () {
     });
 });
 
+
 socket.on('restWat-points', function (points) {
     L.geoJSON(points, {
         onEachFeature: function (feature, layer) {
@@ -50,18 +51,23 @@ socket.on('restWat-points', function (points) {
                 layer.setIcon(new L.icon({
                     iconUrl: "images/rest-water.png",
                     iconSize: [20, 20]
-                }));
+                })).bindPopup('Flush Toilet and Water');
             } else if (layer.feature.properties.TOILET_TYP == 'V') {
                 layer.setIcon(new L.icon({
                     iconUrl: "images/toilet.png",
                     iconSize: [20, 20]
-                }));
+                })).bindPopup('Vault Toilet; No Water');
+            } else if (layer.feature.properties.TOILET_TYP == 'P') {
+                layer.setIcon(new L.icon({
+                    iconUrl: "images/toilet.png",
+                    iconSize: [20, 20]
+                })).bindPopup('Portable Toilet; No Water');
             } else {
                 layer.setIcon(new L.icon({
                     iconUrl: "images/water.png",
                     iconSize: [20, 20]
-                }));
+                })).bindPopup('Water Only');
             }
         }
     }).addTo(map);
-})
+});
